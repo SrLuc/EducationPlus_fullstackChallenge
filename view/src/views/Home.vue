@@ -1,26 +1,30 @@
 <template>
     <main>
-        <section>
+        <section class="sidebar">
             <h1>Módulo Acadêmico</h1>
             <h2>Alunos</h2>
+    
         </section>
-        <div>
-            <article>
-                <h1>Consulta Alunos</h1>
-                <p>Consulte os alunos cadastrados no sistema</p>
-                <input type="text">
-                <button>Consultar</button>
-                <button>Cadastrar Aluno</button>
+        <div class="container">
+            <article class="registerStudents">
+                <h1 class="titles">Consulta Alunos</h1>
+                <p class="paragraphs">Consulte os alunos cadastrados no sistema</p>
+                <input type="text" class="inputs">
+                <button class="buttons">Consultar</button>
+                <button @click="handleRegister()" class="buttons">
+                    <Modal content="Cadastrar Alunos" />
+                </button>
             </article>
-            <nav>
-                <ul>
-                    <li v-for="student in students" :key="student.id">
-                        <p>{{ student.RA }}</p>
-                        <p>{{ student.name }}</p>
-                        <p>{{ student.email }}</p>
+            <nav class="navigationCells">
+                <ul class="studentsList">
+                    <li v-if="loading">Carregando...</li>
+                    <li v-else v-for="student in students" :key="student.id" class="studentItem">
+                        <p class="paragraphs">{{ student.RA }}</p>
+                        <p class="paragraphs">{{ student.name }}</p>
+                        <p class="paragraphs">{{ student.cpf }}</p>
                         <span>
-                            <button>Editar</button>
-                            <button>Excluir</button>
+                            <button class="buttons">Editar</button>
+                            <button class="buttons">Excluir</button>
                         </span>
                     </li>
                 </ul>
@@ -30,81 +34,112 @@
 </template>
 
 <script setup>
+// IMPORTS
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+//Component
+import Modal from '../components/Modal.vue';
 
+// DATA
 const students = ref([]);
+const loading = ref(true);
+const register = ref(true)
 
+// METHODS
 const fetchAlunos = async () => {
     try {
+        console.log('Fetching alunos...');
         const response = await axios.get('http://127.0.0.1:9999/students');
         students.value = response.data;
         console.log('Alunos:', students.value);
+        loading.value = false;
     } catch (error) {
         console.error('Erro ao buscar alunos:', error);
     }
 };
+
+//Handle Functions
+const handleRegister = async () => {
+    register.value = !register.value;
+
+}
+
+// LIFECYCLE
 onMounted(fetchAlunos);
 
+
 </script>
-    
 
 <style scoped>
 main {
     display: flex;
 }
 
-section {
-    width: 25%;
-    height: 100vh;
-}
-
-div {
+.container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
-    width: 75%;
+    width: 85%;
     height: 100vh;
+    margin: 5px;
 }
 
-article {
+.sidebar {
+    width: 15%;
+    height: 100vh;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    margin: 5px;
+}
+
+.registerStudents {
     height: 30%;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }
 
-nav {
+.navigationCells {
     height: 70%;
+    padding-top: 10px;
 
 }
 
-ul {
+.titles {
+    font-size: 20px;
+    margin: 10px;
+
+}
+
+.paragraphs {
+    font-size: 12px;
+    margin: 10px;
+    text-align: left;
+    width: 25%;
+
+}
+
+.inputs {
+    width: 30%;
+    margin: 10px;
+}
+
+.buttons {
+    padding: 2px;
+    margin: 5px;
+}
+
+
+.studentsList {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-button {
-    padding: 2px;
-
-}
-
-li {
+.studentItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-}
-
-span {
-    display: flex;
-    justify-content: space-between;
-    margin: 5px;
-}
-
-p {
-    width: 25%;
-    font-size: 12px;
-    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }
 </style>
