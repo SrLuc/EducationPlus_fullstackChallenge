@@ -27,7 +27,7 @@
                                 <UpdateModal content="Atualizar" />
                             </button>
                             <button @click="handleDelete()" class="buttons">
-                                <DeleteModal content="Excluir" />
+                                <DeleteModal content="Excluir" :studentID="student.id" :studentName="student.name" />
                             </button>
                         </span>
                     </li>
@@ -52,7 +52,7 @@ import UpdateModal from '../components/UpdateModal.vue';
 const students = ref([]);
 const loading = ref(true);
 const register = ref(true)
-const deleteStudant = ref(true)
+const deleteStudent = ref(true)
 const update = ref(true)
 
 // METHODS
@@ -74,7 +74,7 @@ const handleRegister = async () => {
 }
 
 const handleDelete = async () => {
-    deleteStudant.value = !deleteStudant.value;
+    deleteStudent.value = !deleteStudent.value;
 }
 
 const handleUpdate = async () => {
@@ -137,6 +137,10 @@ main {
 .inputs {
     width: 30%;
     margin: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
 }
 
 .buttons {

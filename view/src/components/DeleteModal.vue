@@ -7,45 +7,64 @@
                 </v-btn>
             </template>
 
-
-            <v-card prepend-icon="mdi-map-marker" text="Deseja realmente excluir o Aluno?" title="Deletar Aluno">
+            <v-card :text="`Deseja excluir o Aluno? ${studentName}`" title="Deletar Aluno">
                 <template v-slot:actions>
                     <v-spacer>
-                        <div class="form-container">
-
-                        </div>
+                        <div class="form-container"></div>
                         <div class="btn-container">
                             <v-btn class="closeBtn" @click="dialog = false">
                                 Voltar
                             </v-btn>
-                            <button class="salvBtn" type="submit">Sim</button>
+                            <v-btn class="salvBtn" @click="handleDelete">
+                                Sim
+                            </v-btn>
                         </div>
                     </v-spacer>
-
-
                 </template>
             </v-card>
         </v-dialog>
     </div>
 </template>
+
 <script>
+import axios from 'axios';
 
 export default {
-    props: {
-        content: {
-            type: String,
-            required: true
-        }
-    },
     data() {
         return {
             dialog: false,
         }
     },
+    props: {
+        content: {
+            type: String,
+            required: true
+        },
+        studentID: {
+            type: Number,
+            required: true
+        },
+        studentName: {
+            type: String,
+            required: true
+        }
+    },
+    methods: {
+        handleDelete() {
+            alert(`Estudante ${this.studentName} deletado com sucesso!`);
+            axios.delete(`http://localhost:9999/students/${this.studentID}`)
+                .then(response => {
+                    this.dialog = false;
+                    this.$emit('deleteStudent', this.studentID);
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('Ocorreu um erro ao tentar excluir o aluno.');
+                });
+        }
+    }
 }
-
 </script>
-
 
 <style scoped>
 .salvBtn {
@@ -62,7 +81,7 @@ export default {
     color: white;
 }
 
-.form {
+.form-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
