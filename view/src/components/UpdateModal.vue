@@ -34,7 +34,7 @@
                                 Fechar
                             </v-btn>
 
-                            <button  class="salvBtn" type="submit">Salvar</button>
+                            <button class="salvBtn" type="submit">Salvar</button>
                         </div>
                     </v-spacer>
 
@@ -44,8 +44,8 @@
         </v-dialog>
     </div>
 </template>
-<script>
 
+<script>
 export default {
     props: {
         content: {

@@ -3,7 +3,7 @@
         <section class="sidebar">
             <h1>Módulo Acadêmico</h1>
             <h2>Alunos</h2>
-    
+
         </section>
         <div class="container">
             <article class="registerStudents">
@@ -12,7 +12,7 @@
                 <input type="text" class="inputs">
                 <button class="buttons">Consultar</button>
                 <button @click="handleRegister()" class="buttons">
-                    <Modal content="Cadastrar Alunos" />
+                    <RegisterModal content="Cadastrar Alunos" />
                 </button>
             </article>
             <nav class="navigationCells">
@@ -23,8 +23,12 @@
                         <p class="paragraphs">{{ student.name }}</p>
                         <p class="paragraphs">{{ student.cpf }}</p>
                         <span>
-                            <button class="buttons">Editar</button>
-                            <button class="buttons">Excluir</button>
+                            <button @click="handleUpdate()" class="buttons">
+                                <UpdateModal content="Atualizar" />
+                            </button>
+                            <button @click="handleDelete()" class="buttons">
+                                <DeleteModal content="Excluir" />
+                            </button>
                         </span>
                     </li>
                 </ul>
@@ -38,13 +42,18 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
+
 //Component
-import Modal from '../components/Modal.vue';
+import DeleteModal from '../components/DeleteModal.vue';
+import RegisterModal from '../components/RegisterModal.vue';
+import UpdateModal from '../components/UpdateModal.vue';
 
 // DATA
 const students = ref([]);
 const loading = ref(true);
 const register = ref(true)
+const deleteStudant = ref(true)
+const update = ref(true)
 
 // METHODS
 const fetchAlunos = async () => {
@@ -62,7 +71,14 @@ const fetchAlunos = async () => {
 //Handle Functions
 const handleRegister = async () => {
     register.value = !register.value;
+}
 
+const handleDelete = async () => {
+    deleteStudant.value = !deleteStudant.value;
+}
+
+const handleUpdate = async () => {
+    update.value = !update.value;
 }
 
 // LIFECYCLE
