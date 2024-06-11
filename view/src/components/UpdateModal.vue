@@ -7,64 +7,85 @@
                 </v-btn>
             </template>
 
-
             <v-card prepend-icon="mdi-map-marker"
                 text="Por favor, preencha o formulário abaixo para cadastrar um novo aluno." title="Cadastrar Aluno">
-                <template v-slot:actions>
-                    <v-spacer>
-                        <div class="form-container">
-                            <form class="form" action="">
-                                <div class="form-section">
-                                    <label for="name">Nome:</label>
-                                    <input type="text" required>
-                                </div>
-                                <div>
-                                    <label for="cpf">CPF:</label>
-                                    <input type="text" required>
-                                </div>
-                                <div>
-                                    <label for="email">Email:</label>
-                                    <input type="text" required>
-                                </div>
-
-                            </form>
+                <div class="form-container">
+                    <form class="form" @submit.prevent="submitForm">
+                        <div class="form-section">
+                            <label for="name">Nome:*</label>
+                            <input type="text" v-model="form.name" placeholder="Nome Completo" required>
+                        </div>
+                        <div>
+                            <label for="age">Idade</label>
+                            <input type="number" v-model="form.age" placeholder="Idade" required>
+                        </div>
+                        <div>
+                            <label for="cpf">CPF:</label>
+                            <input type="text" v-model="form.cpf" placeholder="EX: 123.456.789-10" required>
+                        </div>
+                        <div>
+                            <label for="email">Email:*</label>
+                            <input type="text" v-model="form.email" placeholder="isacnewton@mail.com" required>
                         </div>
                         <div class="btn-container">
+                            <button type="submit" class="updateBtn">Atualizar</button>
                             <v-btn class="closeBtn" @click="dialog = false">
                                 Fechar
                             </v-btn>
-
-                            <button class="salvBtn" type="submit">Salvar</button>
                         </div>
-                    </v-spacer>
-
-
-                </template>
+                    </form>
+                </div>
             </v-card>
         </v-dialog>
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        content: {
-            type: String,
-            required: true
-        }
+<script setup>
+import axios from 'axios';
+import { ref } from 'vue';
+
+const props = defineProps({
+    content: {
+        type: String,
+        required: true
     },
-    data() {
-        return {
-            dialog: false,
-        }
-    },
+    id: {
+        type: Number,
+        required: true
+    }
+});
+
+const form = ref({
+    name: '',
+    age: '',
+    cpf: '',
+    email: ''
+});
+
+const dialog = ref(false);
+
+function validateCpf(cpf) {
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+    return cpfRegex.test(cpf);
 }
 
+async function submitForm() {
+    if (!validateCpf(form.value.cpf)) {
+        alert('CPF inválido! Por favor, insira um CPF válido.');
+        return;
+    }
+    try {
+        await axios.put(`http://localhost:9999/students/${props.id}`, form.value);
+        alert('Aluno Atualizado com sucesso!');
+        dialog.value = false; // Fechar o diálogo após o cadastro
+    } catch (error) {
+        console.error('Erro ao cadastrar aluno:', error);
+    }
+}
 </script>
 
-
 <style scoped>
-.salvBtn {
+.updateBtn {
     background-color: #4CAF50;
     color: white;
     padding: 5px 11px;

@@ -24,7 +24,7 @@
                         <p class="paragraphs">{{ student.cpf }}</p>
                         <span>
                             <button @click="handleUpdate()" class="buttons">
-                                <UpdateModal content="Atualizar" />
+                                <UpdateModal content="Atualizar" :id="student.id" />
                             </button>
                             <button @click="handleDelete()" class="buttons">
                                 <DeleteModal content="Excluir" :studentID="student.id" :studentName="student.name" />
